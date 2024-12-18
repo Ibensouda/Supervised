@@ -96,15 +96,12 @@ for name, model in optimized_models.items():
     }
     print(name)
     print("-------------------------")
-    print(metrics)
-    print("-------------------------")
-
-    results[name] = metrics
-
     print(f"Accuracy (train): {metrics['accuracy_train']}")
     print(f"Accuracy (test): {metrics['accuracy_test']}")
     print("\nClassification Report (test):\n", metrics['classification_report_test'])
     print("\nConfusion Matrix (test):\n", metrics['confusion_matrix_test'])
+    score = str(metrics['accuracy_test']).split('.')[1][:3]
+    joblib.dump(model, f"{name}_BestModel_0{score}.joblib")
 
 summary = []
 for name, metrics in results.items():
@@ -117,6 +114,3 @@ for name, metrics in results.items():
 summary_df = pd.DataFrame(summary)
 print("\nRésumé des performances :\n", summary_df)
     
-
-for name, model in optimized_models.items():
-    joblib.dump(model, f"{name}_optimized_model.joblib")

@@ -1,5 +1,4 @@
 import pandas as pd
-import joblib
 from sklearn.calibration import cross_val_predict
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.ensemble import GradientBoostingClassifier
@@ -51,15 +50,8 @@ metrics = {
 }
 print("GradientBoost")
 print("-------------------------")
-print(metrics)
-print("-------------------------")
-results = []
-results["GradientBoost"] = metrics
 
 print(f"Accuracy (train): {metrics['accuracy_train']}")
 print(f"Accuracy (test): {metrics['accuracy_test']}")
 print("\nClassification Report (test):\n", metrics['classification_report_test'])
 print("\nConfusion Matrix (test):\n", metrics['confusion_matrix_test'])
-
-accuracy = str(metrics['accuracy_test']).split('.')[1][:4]
-joblib.dump(gb_model, "GradientBoost_0{accuracy}.joblib")

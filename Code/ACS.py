@@ -12,4 +12,3 @@ df_features = pd.read_csv('../Dataset/features.csv')
 
 hist = df_features.hist(bins=3)
 plt.show()
-

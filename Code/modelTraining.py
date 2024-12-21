@@ -8,6 +8,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier, StackingClassifier
+import time
 
 features = pd.read_csv("../Dataset/features.csv")
 label = pd.read_csv("../Dataset/labels.csv")
@@ -54,7 +55,7 @@ param_grids = {
         "n_estimators": [50, 100, 200],
         "learning_rate": [0.01, 0.1, 1, 2]
     },
-    "GradientBoosting": {
+    "GradientBoost": {
         "n_estimators": [100, 200, 300],
         "learning_rate": [0.01, 0.1, 0.2],
         "max_depth": [3, 5, 7],
@@ -77,15 +78,22 @@ def optimize_model(name, model, param_grid, X_train, y_train):
 # Optimiser les modèles
 optimized_models = {}
 for name, model in models.items():
+    print(f"Début de l'optimisation de {name}")
     if name in param_grids:
+        start = time.time()
         optimized_models[name] = optimize_model(name, model, param_grids[name], scaled_df_train, y_train)
+        end = time.time()
+        print(f"Temps d'exécution pour l'optimisation de {name} : {end-start}")
 
 results={}
 for name, model in optimized_models.items():
+    print(f"Début de l'entrainement pour {model}")
+    start = time.time()
     y_pred_train = cross_val_predict(model, scaled_df_train, y_train.values.ravel())
     model.fit(scaled_df_train, y_train.values.ravel())
     y_pred_test = model.predict(scaled_df_test)
 
+    end = time.time()
     metrics = {
         "accuracy_train": accuracy_score(y_train, y_pred_train),
         "accuracy_test": accuracy_score(y_test, y_pred_test),
@@ -100,9 +108,9 @@ for name, model in optimized_models.items():
     print(f"Accuracy (test): {metrics['accuracy_test']}")
     print("\nClassification Report (test):\n", metrics['classification_report_test'])
     print("\nConfusion Matrix (test):\n", metrics['confusion_matrix_test'])
+    print(f"Temps d'exécution pour l'entrainement de {name} : {end-start}")
     score = str(metrics['accuracy_test']).split('.')[1][:3]
     joblib.dump(model, f"{name}_BestModel_0{score}.joblib")
-
 summary = []
 for name, metrics in results.items():
     summary.append({

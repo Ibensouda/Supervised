@@ -42,9 +42,11 @@ print("Corrélations initiales entre attributs et labels :\n", correlations)
 
 models_from_joblib = {
     "RandomForest": joblib.load("../joblibs/RandomForest_BestModel_08159.joblib"),
+    "GradientBoost": joblib.load("../joblibs/GradientBoost_BestModel_08158.joblib"),
     "AdaBoost": joblib.load("../joblibs/AdaBoost_BestModel_08038.joblib"),
     "Stacking": joblib.load("../joblibs/Stacking_BestModel_08194.joblib")
 }
+
 correlations_model = {}
 
 for name, model in models_from_joblib.items():
